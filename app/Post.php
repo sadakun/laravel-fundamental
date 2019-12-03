@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
@@ -11,6 +12,9 @@ class Post extends Model
         'title',
         'content'
     ];
+
+    use SoftDeletes;
+    protected $dates = ['delete_at']; //properties that we made to delete
 
     public function user()
     {

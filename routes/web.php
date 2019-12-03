@@ -5,6 +5,7 @@ use App\Post;
 use App\Role;
 use App\Country;
 use App\Photo;
+use App\Tag;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,7 +20,34 @@ use App\Photo;
 Route::get('/', function () {
     return view('welcome');
 });
+/*
+|--------------------------------------------------------------------------
+| Soft Delete
+|--------------------------------------------------------------------------
+*/
+Route::get('/softdelete/{id}', function ($id) {
+    Post::find($id)->delete();
+});
+// retrieving softdelete
+Route::get('/readsoftdelete', function () {
+    $post = Post::find(1);
+    //return $post;
 
+    // Post::withTrashed()->where('id', 1)->get();
+    // or
+    Post::onlyTrashed()->where('is_admin', 0)->get();
+    return $post;
+});
+#restoring trashed record/deleted
+Route::get('/restore/{id}', function ($id) {
+    Post::withTrashed()->where('id', $id)->restore();
+});
+#deleting from softdelete permanently
+Route::get('/forcedelete', function () {
+    // Post::withTrashed()->where('is_admin', 0)->forceDelete();
+    // or
+    Post::onlyTrashed()->where('is_admin', 0)->forceDelete();
+});
 /*
 |--------------------------------------------------------------------------
 | ELOQUENT Relationship
@@ -94,4 +122,20 @@ Route::get('/post/{id}/photos', function ($id) {
 Route::get('/photo/{id}/post', function ($id) {
     $photo = Photo::findOrFail($id);
     return $photo->imageable;
+});
+
+// Polymorphic Many to Many
+Route::get('/post/tag', function () {
+    $post = Post::find(1);
+    foreach ($post->tags as $tag) {
+        echo $tag->name;
+    }
+});
+
+Route::get('/tag/post', function () {
+    $tag = Tag::find(2);
+    // return $tag->posts;
+    foreach ($tag->posts as $post) {
+        echo $post->title;
+    }
 });
