@@ -10,9 +10,10 @@ class Post extends Model
     //
     protected $fillable = [
         'title',
-        'content'
+        'content',
+        'path'
     ];
-
+    public $directory = "/images/";
     use SoftDeletes;
     protected $dates = ['delete_at']; //properties that we made to delete
 
@@ -29,5 +30,14 @@ class Post extends Model
     public function tags()
     {
         return $this->morphToMany('App\Tag', 'taggable');
+    }
+
+    public function getPathAttribute($value)
+    {
+        return $this->directory . $value;
+    }
+    public static function scopeLatest($query)
+    {
+        return $query->orderBy('id', 'asc')->get();
     }
 }
