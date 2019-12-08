@@ -8,6 +8,7 @@ use App\Photo;
 use App\Tag;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome');
     // $user = Auth::user();
     // if ($user->isAdmin()) {
     //     echo "This user is administrator";
@@ -29,6 +30,15 @@ Route::get('/', function () {
     // if (Auth::check()) {
     //     return "The user is logged in";
     // }
+
+    //FOR MAILGUN
+    $data = [
+        'title' => 'sending email mailgun',
+        'content' => 'Hi this my first time sending an email'
+    ];
+    Mail::send('emails.test', $data, function ($message) {
+        $message->to('sm123kuncoro@gmail.com', 'Samuel')->subject('This is the Test');
+    });
 });
 
 
